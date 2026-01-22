@@ -4,6 +4,9 @@ locals {
   private_subnet_ids = split(",", var.private_subnet_ids)
   runner_subnet_id   = var.runner_subnet_id
 
+  # kyverno
+  enable_kyverno = contains(["1", "true"], var.enable_kyverno)
+
   # nuon dns
   enable_nuon_dns = contains(["1", "true"], var.enable_nuon_dns)
   nuon_dns = {
@@ -177,7 +180,13 @@ variable "maintenance_cluster_role_rules_override" {
 }
 
 
-# kyverno policies
+# kyverno
+variable "enable_kyverno" {
+  type        = string
+  default     = "false"
+  description = "Whether or not to install Kyverno and its policies."
+}
+
 variable "kyverno_policy_dir" {
   type        = string
   description = "Path to a directory with kyverno policy manifests."

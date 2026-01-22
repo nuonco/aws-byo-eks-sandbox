@@ -16,13 +16,13 @@ resources of this type.
 
 ## Requirements
 
-| Name                                                                        | Version  |
-| --------------------------------------------------------------------------- | -------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform)    | >= 1.7.5 |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                      | = 5.94.1 |
-| <a name="requirement_helm"></a> [helm](#requirement_helm)                   | = 2.17.0 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement_kubectl)          | = 1.19   |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement_kubernetes) | = 2.36.0 |
+| Name                                                                        | Version   |
+| --------------------------------------------------------------------------- | --------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform)    | >= 1.14.3 |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                      | = 5.94.1  |
+| <a name="requirement_helm"></a> [helm](#requirement_helm)                   | = 2.17.0  |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement_kubectl)          | = 1.19    |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement_kubernetes) | = 2.36.0  |
 
 ## Providers
 
@@ -34,11 +34,10 @@ resources of this type.
 
 ## Modules
 
-| Name                                                                                                  | Source                        | Version |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------- | ------- |
-| <a name="module_additional_subnet_tags"></a> [additional_subnet_tags](#module_additional_subnet_tags) | ./subnet_tags                 | n/a     |
-| <a name="module_ecr"></a> [ecr](#module_ecr)                                                          | terraform-aws-modules/ecr/aws | 2.4.0   |
-| <a name="module_nuon_dns"></a> [nuon_dns](#module_nuon_dns)                                           | ./nuon_dns                    | n/a     |
+| Name                                                        | Source                        | Version |
+| ----------------------------------------------------------- | ----------------------------- | ------- |
+| <a name="module_ecr"></a> [ecr](#module_ecr)                | terraform-aws-modules/ecr/aws | 2.4.0   |
+| <a name="module_nuon_dns"></a> [nuon_dns](#module_nuon_dns) | ./nuon_dns                    | n/a     |
 
 ## Resources
 
@@ -51,7 +50,6 @@ resources of this type.
 | [aws_iam_role_policy_attachment.ecr_access_maintenance](https://registry.terraform.io/providers/hashicorp/aws/5.94.1/docs/resources/iam_role_policy_attachment) | resource    |
 | [aws_iam_role_policy_attachment.ecr_access_provision](https://registry.terraform.io/providers/hashicorp/aws/5.94.1/docs/resources/iam_role_policy_attachment)   | resource    |
 | [helm_release.kyverno](https://registry.terraform.io/providers/hashicorp/helm/2.17.0/docs/resources/release)                                                    | resource    |
-| [helm_release.metrics_server](https://registry.terraform.io/providers/hashicorp/helm/2.17.0/docs/resources/release)                                             | resource    |
 | [kubectl_manifest.default_policies](https://registry.terraform.io/providers/gavinbunney/kubectl/1.19/docs/resources/manifest)                                   | resource    |
 | [kubectl_manifest.maintenance](https://registry.terraform.io/providers/gavinbunney/kubectl/1.19/docs/resources/manifest)                                        | resource    |
 | [kubectl_manifest.maintenance_role_binding](https://registry.terraform.io/providers/gavinbunney/kubectl/1.19/docs/resources/manifest)                           | resource    |
@@ -81,6 +79,7 @@ resources of this type.
 | <a name="input_deprovision_iam_role_arn"></a> [deprovision_iam_role_arn](#input_deprovision_iam_role_arn)                                                                                        | The deprovision IAM Role ARN                                                                                                                       | `string`                                                                                                                                                                | n/a                                                                                                                                                                                                                                                                                                                                                                |   yes    |
 | <a name="input_deprovision_role_eks_access_entry_policy_associations"></a> [deprovision_role_eks_access_entry_policy_associations](#input_deprovision_role_eks_access_entry_policy_associations) | EKS Cluster Access Entry Policy Associations for deprovision role.                                                                                 | `map(any)`                                                                                                                                                              | <pre>{<br/> "cluster_admin": {<br/> "access_scope": {<br/> "type": "cluster"<br/> },<br/> "policy_arn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"<br/> },<br/> "eks_admin": {<br/> "access_scope": {<br/> "type": "cluster"<br/> },<br/> "policy_arn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"<br/> }<br/>}</pre> |    no    |
 | <a name="input_deprovision_role_eks_kubernetes_groups"></a> [deprovision_role_eks_kubernetes_groups](#input_deprovision_role_eks_kubernetes_groups)                                              | List of Kubernetes Groups to add this role to. The deprovision role is assigned to a deprovision group automatically. These are additional groups. | `list(any)`                                                                                                                                                             | `[]`                                                                                                                                                                                                                                                                                                                                                               |    no    |
+| <a name="input_enable_kyverno"></a> [enable_kyverno](#input_enable_kyverno)                                                                                                                      | Whether or not to install Kyverno and its policies.                                                                                                | `string`                                                                                                                                                                | `"false"`                                                                                                                                                                                                                                                                                                                                                          |    no    |
 | <a name="input_enable_nuon_dns"></a> [enable_nuon_dns](#input_enable_nuon_dns)                                                                                                                   | Whether or not the cluster should use a nuon-provided nuon.run domain. Controls the cert-manager-issuer and the route_53_zone.                     | `string`                                                                                                                                                                | `"false"`                                                                                                                                                                                                                                                                                                                                                          |    no    |
 | <a name="input_helm_driver"></a> [helm_driver](#input_helm_driver)                                                                                                                               | One of 'configmap' or 'secret'                                                                                                                     | `string`                                                                                                                                                                | `"secret"`                                                                                                                                                                                                                                                                                                                                                         |    no    |
 | <a name="input_internal_root_domain"></a> [internal_root_domain](#input_internal_root_domain)                                                                                                    | The internal root domain.                                                                                                                          | `string`                                                                                                                                                                | n/a                                                                                                                                                                                                                                                                                                                                                                |   yes    |
