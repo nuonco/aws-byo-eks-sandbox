@@ -30,6 +30,10 @@ resource "aws_eks_access_entry" "nuon" {
   type          = "STANDARD"
 
   tags = local.tags
+
+  depends_on = [
+    aws_security_group_rule.runner_cluster_access,
+  ]
 }
 
 locals {
