@@ -1,0 +1,51 @@
+locals {
+  kyverno = {
+    namespace  = "kyverno"
+    value_file = "${path.module}/values/kyverno/values.yaml"
+    default_policies = [
+      "${path.module}/values/kyverno/policies/restrict-binding-system-groups.yaml",
+      "${path.module}/values/kyverno/policies/restrict-secret-role-verbs.yaml",
+    ]
+  }
+}
+
+// install kyverno
+resource "helm_release" "kyverno" {
+  count    = local.enable_kyverno ? 1 : 0
+  provider = helm.main
+
+  namespace        = "kyverno"
+  create_namespace = true
+
+  name       = "kyverno"
+  repository = "https://kyverno.github.io/kyverno/"
+  chart      = "kyverno"
+  version    = "3.3.7" // TODO: make an input var?
+
+  values = [
+    file(local.kyverno.value_file),
+  ]
+}
+
+resource "kubectl_manifest" "default_policies" {
+  provider = kubectl.main
+
+  for_each  = local.enable_kyverno ? toset(local.kyverno.default_policies) : toset([])
+  yaml_body = file(each.value)
+
+  depends_on = [
+    helm_release.kyverno
+  ]
+}
+
+resource "kubectl_manifest" "vendor_policies" {
+  provider = kubectl.main
+
+  for_each = local.enable_kyverno ? fileset(var.kyverno_policy_dir, "*.yaml") : toset([])
+
+  yaml_body = file("${var.kyverno_policy_dir}/${each.key}")
+
+  depends_on = [
+    helm_release.kyverno
+  ]
+}
